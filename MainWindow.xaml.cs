@@ -42,7 +42,7 @@ namespace FlightSimulatorApp
         {
 
         }
-
+        public string ip = "127.0.0.1";
         private void B1_Click(object sender, RoutedEventArgs e)
         {
             (Application.Current as App).MySimulatorViewModel.connect("127.0.0.1", 5402);
