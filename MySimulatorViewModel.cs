@@ -1,12 +1,19 @@
-﻿using Microsoft.Maps.MapControl.WPF;
+﻿using FlightSimulatorApp;
+using Microsoft.Maps.MapControl.WPF;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 //using FlightSimulator.Model;
 
-namespace FlightSimulatorApp
+namespace FlightSimulatorAppv
 {
     public class MySimulatorViewModel : ISimulatorViewModel
     {
@@ -17,8 +24,8 @@ namespace FlightSimulatorApp
         private double aileron;
         private double lon;
         private double lat;
-
-        string settings_ip_saved;
+        
+                string settings_ip_saved;
         string settings_info_port_saved;
         string settings_command_port_saved;
 
@@ -26,7 +33,6 @@ namespace FlightSimulatorApp
         public ICommand Settings_Cancel_Click { get; set; }
         //MW_ConnectCommand
         public ICommand MW_ConnectCommand { get; set; }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -48,23 +54,26 @@ namespace FlightSimulatorApp
                 }
             };
             Err_visiblity_Cannot_Connect = Visibility.Collapsed;
-            VM_Err_visiblity_Error_Server = Visibility.Collapsed;
+            model.Err_Server_Format = Visibility.Collapsed;
             VM_Err_visiblity_Not_Connected = Visibility.Visible;
+            model.Err_Server_IO = Visibility.Collapsed;
+
             color = new SolidColorBrush();
             color.Color = System.Windows.Media.Color.FromRgb(255,0,0);
             VM_Color = color;
-            VM_Ip_address = "127.0.0.1";
+      
+         VM_Ip_address = "127.0.0.1";
             VM_Info_port = "5402";
             VM_Command_port = "5400";
             settings_ip_saved = VM_Ip_address;
             settings_info_port_saved = VM_Info_port;
             settings_command_port_saved = VM_Command_port;
 
-           
+
             Settings_Cancel_Click = new RelayCommand(SettingsCancelClicked);
             Settings_Ok_Click = new RelayCommand(SettingsOkClicked);
             MW_ConnectCommand = new RelayCommand(connect);
-        }
+         }
         void SettingsOkClicked(object o)
         {
             settings_ip_saved = VM_Ip_address;
@@ -78,10 +87,8 @@ namespace FlightSimulatorApp
             VM_Ip_address=settings_ip_saved;
             VM_Info_port=settings_info_port_saved  ;
            VM_Command_port= settings_command_port_saved  ;
-           
+
         }
-
-
 
 
         //Proerties
@@ -102,6 +109,7 @@ namespace FlightSimulatorApp
             set
             {
                 model.Longitude = value;
+        
                 OnPropertyChanged("VM_Longitude");
             }
         }
@@ -113,6 +121,7 @@ namespace FlightSimulatorApp
             set
             {
                 model.Latitude = value;
+             
                 OnPropertyChanged("VM_Latitude");
             }
         }
@@ -196,6 +205,7 @@ namespace FlightSimulatorApp
                 if (this.throttle != value)
                 {
                     this.throttle = value;
+
                     model.changeThrottle(throttle);
                 }
             }
@@ -214,38 +224,35 @@ namespace FlightSimulatorApp
                 }
             }
         }
-    
 
         //Err_visiblity
-        private Visibility err_msg_cannot_connect;
-        public Visibility Err_visiblity_Cannot_Connect
+        private Visibility err_Out_Of_Bounds;
+        public Visibility VM_Err_Out_Of_Bounds
         {
-            get { return err_msg_cannot_connect; }
-            set
-            {
-                this.err_msg_cannot_connect = value;
-                OnPropertyChanged("Err_visiblity_Cannot_Connect");
+            get { return model.Err_Out_Of_Bounds; }
+          
+          
 
-            }
+           
         }
 
-        //Err_
-        private Visibility VM_err_msg_not_connected;
-        public Visibility VM_Err_visiblity_Not_Connected
+        //Error in server output format
+        private Visibility VM_err_server_format;
+        public Visibility VM_Err_Server_Format
         {
-            get { return VM_err_msg_not_connected; }
-            set
-            {
-                this.VM_err_msg_not_connected = value;
-                OnPropertyChanged("VM_Err_visiblity_Not_Connected");
-
-            }
+            get { return model.Err_Server_IO; }
+        
         }
 
+        private Visibility VM_err_server_IO;
+        public Visibility VM_Err_Server_IO
+        {
+            get { return model.Err_Server_IO; }
 
+        }
 
         private Visibility VM_err_msg_error_server;
-        public Visibility VM_Err_visiblity_Error_Server
+        public Visibility VM_Err_Msg_Error_Server
         {
             get { return VM_err_msg_error_server; }
             set
@@ -255,7 +262,32 @@ namespace FlightSimulatorApp
 
             }
         }
-        
+
+
+        private Visibility err_msg_cannot_connect;
+        public Visibility Err_visiblity_Cannot_Connect
+        {
+            get { return err_msg_cannot_connect; }
+            set
+            {
+                this.err_msg_cannot_connect = value;
+
+                OnPropertyChanged("Err_visiblity_Cannot_Connect");
+
+            }
+        }
+
+        private Visibility VM_err_msg_not_connected;
+        public Visibility VM_Err_visiblity_Not_Connected
+        {
+            get { return model.Err_visiblity_Not_Connected; }
+            set
+            {
+                this.VM_err_msg_not_connected = value;
+                OnPropertyChanged("VM_Err_visiblity_Not_Connected");
+
+            }
+        }
 
         //Elevator and Rudder are controlled by joystick and get changed together,so using function.
 
@@ -263,6 +295,7 @@ namespace FlightSimulatorApp
         {
             VM_ailron = aileron;
             VM_elevator = elevator;
+
             this.elevator = elevator;
             this.aileron = aileron;
             model.changeCoordinates(elevator, aileron);
@@ -292,7 +325,7 @@ namespace FlightSimulatorApp
             {
                 
                 Err_visiblity_Cannot_Connect = Visibility.Collapsed;
-                model.connect(VM_Ip_address, int.Parse(VM_Info_port));
+                 model.connect(VM_Ip_address, int.Parse(VM_Info_port));
                 color.Color = System.Windows.Media.Color.FromRgb(0, 255, 0);
             }
             catch
@@ -312,9 +345,9 @@ namespace FlightSimulatorApp
             model.disconnect();
         }
 
-       private SolidColorBrush color;
+        private SolidColorBrush color;
         public SolidColorBrush VM_Color
-        { 
+        {
             get { return color; }
             set
             {
@@ -326,8 +359,8 @@ namespace FlightSimulatorApp
                 }
             }
         }
-
-        #region ailron and elevator
+        
+                #region ailron and elevator
         private double vm_ailron;
         public double VM_ailron
         {
@@ -360,11 +393,11 @@ namespace FlightSimulatorApp
             get { return ip_address; }
             set
             {
-               
+
                     this.ip_address = value;
 
                     OnPropertyChanged("VM_Ip_address");
-               
+
             }
         }
         private string info_port;
@@ -395,5 +428,6 @@ namespace FlightSimulatorApp
             }
         }
         #endregion
+
     }
 }
