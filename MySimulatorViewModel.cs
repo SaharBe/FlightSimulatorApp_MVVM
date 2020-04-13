@@ -61,7 +61,35 @@ namespace FlightSimulatorAppv
             color = new SolidColorBrush();
             color.Color = System.Windows.Media.Color.FromRgb(255,0,0);
             VM_Color = color;
+      
+         VM_Ip_address = "127.0.0.1";
+            VM_Info_port = "5402";
+            VM_Command_port = "5400";
+            settings_ip_saved = VM_Ip_address;
+            settings_info_port_saved = VM_Info_port;
+            settings_command_port_saved = VM_Command_port;
+
+
+            Settings_Cancel_Click = new RelayCommand(SettingsCancelClicked);
+            Settings_Ok_Click = new RelayCommand(SettingsOkClicked);
+            MW_ConnectCommand = new RelayCommand(connect);
+         }
+        void SettingsOkClicked(object o)
+        {
+            settings_ip_saved = VM_Ip_address;
+            settings_info_port_saved = VM_Info_port;
+            settings_command_port_saved = VM_Command_port;
+            MessageBox.Show("Succefully Saved");
+            //return true;
         }
+        void SettingsCancelClicked(object o)
+        {
+            VM_Ip_address=settings_ip_saved;
+            VM_Info_port=settings_info_port_saved  ;
+           VM_Command_port= settings_command_port_saved  ;
+
+        }
+
 
         //Proerties
         public double VM_Degree
