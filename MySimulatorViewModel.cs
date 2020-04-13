@@ -359,7 +359,75 @@ namespace FlightSimulatorAppv
                 }
             }
         }
+        
+                #region ailron and elevator
+        private double vm_ailron;
+        public double VM_ailron
+        {
+            get { return vm_ailron; }
+            set
+            {
 
+                this.vm_ailron = value;
+
+                OnPropertyChanged("VM_ailron");
+
+            }
+        }
+        private double vm_elevator;
+        public double VM_elevator
+        {
+            get { return vm_elevator; }
+            set
+            {
+                this.vm_elevator = value;
+                OnPropertyChanged("VM_elevator");
+            }
+        }
+        #endregion
+
+        #region for settings
+        private string ip_address;
+        public string VM_Ip_address
+        {
+            get { return ip_address; }
+            set
+            {
+
+                    this.ip_address = value;
+
+                    OnPropertyChanged("VM_Ip_address");
+
+            }
+        }
+        private string info_port;
+        public string VM_Info_port
+        {
+            get { return info_port; }
+            set
+            {
+
+                this.info_port = value;
+
+                OnPropertyChanged("VM_Info_port");
+
+            }
+        }
+
+        private string command_port;
+        public string VM_Command_port
+        {
+            get { return command_port; }
+            set
+            {
+
+                this.command_port = value;
+
+                OnPropertyChanged("VM_Command_port");
+
+            }
+        }
+        #endregion
 
     }
 }
