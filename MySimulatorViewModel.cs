@@ -24,6 +24,15 @@ namespace FlightSimulatorAppv
         private double aileron;
         private double lon;
         private double lat;
+        
+                string settings_ip_saved;
+        string settings_info_port_saved;
+        string settings_command_port_saved;
+
+        public ICommand Settings_Ok_Click { get; set; }
+        public ICommand Settings_Cancel_Click { get; set; }
+        //MW_ConnectCommand
+        public ICommand MW_ConnectCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
