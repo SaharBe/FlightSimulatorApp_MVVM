@@ -1,4 +1,4 @@
-﻿using FlightSimulatorAppv;
+﻿using FlightSimulatorApp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
