@@ -318,14 +318,14 @@ namespace FlightSimulatorAppv
             }
         }
 
-        public void connect(string ip, int port)
+        public void connect(object o)
         {
 
             try
             {
                 
                 Err_visiblity_Cannot_Connect = Visibility.Collapsed;
-                model.connect(ip, port);
+                 model.connect(VM_Ip_address, int.Parse(VM_Info_port));
                 color.Color = System.Windows.Media.Color.FromRgb(0, 255, 0);
             }
             catch
