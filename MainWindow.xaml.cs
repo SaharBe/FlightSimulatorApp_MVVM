@@ -60,5 +60,10 @@ namespace FlightSimulatorApp
         {
 
         }
+                private void Set_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsUserControl s = new SettingsUserControl();
+            s.ShowDialog();
+        }
     }
 }
