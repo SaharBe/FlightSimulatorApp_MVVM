@@ -293,6 +293,8 @@ namespace FlightSimulatorAppv
 
         public void changeCoordinates(double elevator, double aileron)
         {
+            VM_ailron = aileron;
+            VM_elevator = elevator;
 
             this.elevator = elevator;
             this.aileron = aileron;
