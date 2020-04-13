@@ -67,6 +67,8 @@
         <Label x:Name="lat"  Content="{Binding VM_Latitude}" FontSize="10" FontWeight="Normal" Foreground="Red" Margin="145,213,410,17" Grid.Row="1" Background= "LightGray"/>-->
         <Views:LonLat HorizontalAlignment="Center" Margin="55 0 80 0"  VerticalAlignment="Bottom" Grid.Row="1"></Views:LonLat>
         
+                    <Button x:Name="Set" Content="Setting" HorizontalAlignment="Left" Height="35" VerticalAlignment="Bottom" Width="140" Click="Set_Click"
+                Background ="AliceBlue" BorderBrush="Black" BorderThickness="2" Cursor="Hand" Grid.Row="1" Margin="10,0,0,5"/>
 
 
 
