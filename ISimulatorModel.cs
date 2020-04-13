@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows;
 
 namespace FlightSimulatorApp
 {
@@ -74,9 +75,16 @@ namespace FlightSimulatorApp
             get;
             set;
         }
+        Visibility Err_Out_Of_Bounds { get; set; }
+        Visibility Err_Server_IO { get; set; }
+
+        Visibility Err_Server_Format { get; set; }
+        Visibility Err_visiblity_Not_Connected { get; set; }
 
         void changeThrottle(double value);
         void changeRudder(double value);
         void changeCoordinates(double elevator, double aileron);
+
+     
     }
 }

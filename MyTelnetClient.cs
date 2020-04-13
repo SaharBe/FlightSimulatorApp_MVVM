@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using FlightSimulatorApp;
+using FlightSimulatorAppv;
 using System.Linq.Expressions;
 
 namespace FlightSimulatorApp
@@ -15,6 +15,7 @@ namespace FlightSimulatorApp
     {
         TcpClient tcpClient;
         NetworkStream netStream;
+        
 
         public void connect(string ip, int port)
         {
@@ -22,6 +23,7 @@ namespace FlightSimulatorApp
             {
                 tcpClient = new TcpClient(ip, port);
                 netStream = tcpClient.GetStream();
+                netStream.ReadTimeout = 10000;
             }
             catch (IOException e)
             {
@@ -50,17 +52,26 @@ namespace FlightSimulatorApp
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine("Error in reading from server");
+                    Console.WriteLine("server isn't sending output.disconnecting.");
+                    throw new IOException();
+                    
+                    
+                  
+                    
 
                 }
+                catch(FormatException e)
+                {
+                    Console.WriteLine("Error in format sent from server");
+                    throw new FormatException();
+                }
+
                 string commandRecived = Encoding.ASCII.GetString(myReadBuffer);
                 
                 return commandRecived;
             }
-            else
-            {
-                return "";
-            }
+            return null;
+            
         }
 
         public void write(string command)

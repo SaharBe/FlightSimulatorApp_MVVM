@@ -10,7 +10,7 @@ namespace FlightSimulatorApp
 {
     public interface ISimulatorViewModel : INotifyPropertyChanged
     {
-        void connect(object o);
+        void connect(string ip, int port);
         void disconnect();
     }
 }

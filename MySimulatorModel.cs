@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using FlightSimulatorApp;
+using FlightSimulatorAppv;
 
 namespace FlightSimulatorApp
 {
@@ -16,6 +18,8 @@ namespace FlightSimulatorApp
         private ITelnetClient telnetClient;
         volatile bool stop;
         private static Mutex mut = new Mutex();
+        private static Stopwatch stopwatch;
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -152,6 +156,20 @@ namespace FlightSimulatorApp
                 if (this.longitude != value)
                 {
                     this.longitude = value;
+                    //check if plane out of map bounds
+                    if(this.longitude >= 180)
+                    {
+                        this.longitude = 180;
+                      
+                    }
+
+                    else if(this.longitude <= -180)
+                    {
+                        this.longitude = -180;
+                     
+                    }
+              
+
                     this.NotifyPropertyChanged("Longitude");
                 }
 
@@ -167,13 +185,51 @@ namespace FlightSimulatorApp
                 if (this.latitude != value)
                 {
                     this.latitude = value;
+                    //check if plane out of map bounds
+                    if (this.latitude >= 90)
+                    {
+                        this.latitude = 90;
+                        Err_Out_Of_Bounds = Visibility.Visible;
+                    }
+
+                    else if (this.latitude <= -90)
+                    {
+                        this.latitude = -90;
+                        Err_Out_Of_Bounds = Visibility.Visible;
+                    }
+                    else { Err_Out_Of_Bounds = Visibility.Collapsed; }
                     this.NotifyPropertyChanged("Latitude");
                 }
 
             }
         }
+        //Error if the plane is in the map edges
+        private Visibility err_out_of_bounds;
+        public Visibility Err_Out_Of_Bounds
+        {
+            get { return err_out_of_bounds; }
+            set
+            {
+                this.err_out_of_bounds = value;
+                this.NotifyPropertyChanged("Err_Out_Of_Bounds");
 
-        //Err_
+
+            }
+        }
+
+        //Error in the server output format
+        private Visibility err_server_format;
+        public Visibility Err_Server_Format
+        {
+            get { return err_server_format; }
+            set
+            {
+                this.err_server_format = value;
+                this.NotifyPropertyChanged("Err_Server_Format");
+
+            }
+        }
+
         private Visibility err_msg_not_connected;
         public Visibility Err_visiblity_Not_Connected
         {
@@ -182,6 +238,18 @@ namespace FlightSimulatorApp
             {
                 this.err_msg_not_connected = value;
                 this.NotifyPropertyChanged("Err_visiblity_Not_Connected");
+
+            }
+        }
+
+        private Visibility err_server_IO;
+        public Visibility Err_Server_IO
+        {
+            get { return err_server_IO; }
+            set
+            {
+                this.err_server_IO = value;
+                this.NotifyPropertyChanged("Err_Server_IO");
 
             }
         }
@@ -203,6 +271,8 @@ namespace FlightSimulatorApp
         {
             this.telnetClient = telnetClient;
             this.stop = true;
+            Err_Out_Of_Bounds = Visibility.Collapsed;
+       
         }
 
 
@@ -235,64 +305,77 @@ namespace FlightSimulatorApp
             //getting the dashboard information
             new Thread(delegate ()
             {
+                Console.WriteLine("entered new thread");
+
                 if (Thread.CurrentThread.Name == null) 
-                { 
+                 { 
                 Thread.CurrentThread.Name = "RequestPropsThread";
                   }
-
+                
                 while (!stop)
                 {
-                    Console.WriteLine("entered new thread");
-                    mut.WaitOne();
                     try
                     {
-                        telnetClient.write("get /instrumentation/heading-indicator/indicated-heading-deg\n");
-                        Degree = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        mut.WaitOne();
+                       
+                            telnetClient.write("get /instrumentation/heading-indicator/indicated-heading-deg\n");
+                            Degree = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/gps/indicated-vertical-speed\n");
+                        VerticalSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/gps/indicated-ground-speed-kt\n");
+                        GroundSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/airspeed-indicator/indicated-speed-kt\n");
+                        AirSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/gps/indicated-altitude-ft\n");
+                        GpsAltitude = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/attitude-indicator/internal-roll-deg\n");
+                        RollDegree = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/attitude-indicator/internal-pitch-deg\n");
+                        PitchDegree = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        telnetClient.write("get /instrumentation/altimeter/indicated-altitude-ft\n");
+                        AltimeterAltitude = Math.Round(double.Parse(telnetClient.read()), 4);
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (!stop)
+                            {
+                                telnetClient.write("get /position/longitude-deg\n");
+                                Longitude = Math.Round(double.Parse(telnetClient.read()), 4);
+                            }
+                            if (!stop)
+                            {
+                                telnetClient.write("get /position/latitude-deg\n");
+                                Latitude = Math.Round(double.Parse(telnetClient.read()), 4);
+                            }
+                            Thread.Sleep(50);
+                        }
+                    }catch(IOException e)
+                    {
+                        Got_IO_Error();
+                        Thread.Sleep(5000);
+
+                        Err_Server_IO = Visibility.Collapsed;
+                        disconnect();
+                        Err_visiblity_Not_Connected = Visibility.Visible;
+
+
                     }
-                    catch (FormatException e)
+                    catch(FormatException e)
                     {
                         Got_Format_Error();
                     }
 
 
-                    telnetClient.write("get /instrumentation/gps/indicated-vertical-speed\n");
-                    VerticalSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
 
-                    telnetClient.write("get /instrumentation/gps/indicated-ground-speed-kt\n");
-                    GroundSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    telnetClient.write("get /instrumentation/airspeed-indicator/indicated-speed-kt\n");
-                    AirSpeed = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    telnetClient.write("get /instrumentation/gps/indicated-altitude-ft\n");
-                    GpsAltitude = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    telnetClient.write("get /instrumentation/attitude-indicator/internal-roll-deg\n");
-                    RollDegree = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    telnetClient.write("get /instrumentation/attitude-indicator/internal-pitch-deg\n");
-                    PitchDegree = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    telnetClient.write("get /instrumentation/altimeter/indicated-altitude-ft\n");
-                    AltimeterAltitude = Math.Round(double.Parse(telnetClient.read()), 4);
-
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (!stop)
-                        {
-                            telnetClient.write("get /position/longitude-deg\n");
-                            Longitude = Math.Round(double.Parse(telnetClient.read()), 4);
-                        }
-                        if (!stop)
-                        {
-                            telnetClient.write("get /position/latitude-deg\n");
-                            Latitude = Math.Round(double.Parse(telnetClient.read()), 4);
-                        }
-                    }
-
-
-
-                    Thread.Sleep(50);
+                    
                     mut.ReleaseMutex();
                 }
                 
@@ -308,7 +391,12 @@ namespace FlightSimulatorApp
 
         void Got_Format_Error()
         {
-            Err_visiblity_Error_Server = Visibility.Visible;
+            Err_Server_IO = Visibility.Visible;
+        }
+
+        void Got_IO_Error()
+        {
+            Err_Server_IO= Visibility.Visible;
         }
 
         public void NotifyPropertyChanged(string propName)
@@ -340,14 +428,6 @@ namespace FlightSimulatorApp
             }
 
 
-        }
-
-        public void changeIP(string ip)
-        {
-           
-           
-
-       
         }
 
         public void changeRudder(double rudder)

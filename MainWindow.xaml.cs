@@ -13,8 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using FlightSimulatorApp;
-using FlightSimulatorApp.Views;
-
+using FlightSimulatorAppv;
 
 namespace FlightSimulatorApp
 {
@@ -43,13 +42,10 @@ namespace FlightSimulatorApp
         {
 
         }
-        public string ip = "127.0.0.1";
 
         private void B1_Click(object sender, RoutedEventArgs e)
         {
-           
-    
-      //  (Application.Current as App).MySimulatorViewModel.connect("127.0.0.1", 5402);
+            (Application.Current as App).MySimulatorViewModel.connect("127.0.0.1", 5402);
 
         }
 
@@ -63,12 +59,6 @@ namespace FlightSimulatorApp
         private void controls_Loaded(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private void Set_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsUserControl s = new SettingsUserControl();
-            s.ShowDialog();
         }
     }
 }

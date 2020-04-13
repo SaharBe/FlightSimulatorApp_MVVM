@@ -34,14 +34,14 @@
 
 
 
-        <Views:map Margin="55,123,75,70" Grid.RowSpan="2"></Views:map>
+        <Views:map Margin="55,104,80,50" Grid.RowSpan="2"></Views:map>
 
 
         <Grid Grid.Column="1" Grid.Row="1" >
-            <Views:controls Loaded="controls_Loaded" Margin="-15,10,25,10"/>
+            <Views:controls Width="220" Height="220" Loaded="controls_Loaded"></Views:controls>
         </Grid>
 
-        <Button x:Name="Connect" Content="CONNECT" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="140" Command="{Binding MW_ConnectCommand}"
+        <Button x:Name="Connect" Content="CONNECT" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="140" Click="B1_Click"
                 Background ="AliceBlue" BorderBrush="Black" BorderThickness="2" Cursor="Hand"/>
         <Button x:Name="disconnect" Content="DISCONNECT" HorizontalAlignment="Left" Height="35" Margin="10,57,0,0" VerticalAlignment="Top" Width="140" Click="B2_Click"
                 Background ="AliceBlue" BorderBrush="Black" BorderThickness="2" Cursor="Hand"/>
@@ -50,12 +50,14 @@
             <Label Content="✈Flight Simulator" Height="52"   Width="300" FontWeight="ExtraBlack" FontSize="30" 
                Background="LightSlateGray"/>
             <TextBlock Visibility="{Binding Err_visiblity_Cannot_Connect}"  Foreground="red" HorizontalAlignment="Center" Text="Unable to connect to remote server" FontWeight="Bold"></TextBlock>
-            <TextBlock Visibility="{Binding VM_Err_visiblity_Not_Connected}"  Foreground="red" HorizontalAlignment="Center" Text="Not connected yet" FontWeight="Bold"></TextBlock>
-            <TextBlock Visibility="{Binding VM_Err_visiblity_Error_Server}"  Foreground="red" HorizontalAlignment="Center" Text="The server sent invalid output" FontWeight="Bold"></TextBlock>
+            <TextBlock Visibility="{Binding VM_Err_visiblity_Not_Connected}"  Foreground="red" HorizontalAlignment="Center" Text="Not connected" FontWeight="Bold"></TextBlock>
+            <TextBlock Visibility="{Binding VM_Err_Server_Format}"  Foreground="red" HorizontalAlignment="Center" Text="The server sent invalid output" FontWeight="Bold"></TextBlock>
+            <TextBlock Visibility="{Binding VM_Err_Out_Of_Bounds}"  Foreground="red" HorizontalAlignment="Center" Text="Plane is out of map bounds" FontWeight="Bold"></TextBlock>
+            <TextBlock Visibility="{Binding VM_Err_Server_IO}"  Foreground="red" HorizontalAlignment="Center" Text="server timed out.disconnecting..." FontWeight="Bold"></TextBlock>
         </StackPanel>
 
-        <Ellipse  Width="10" Height="10" Fill="{Binding VM_Color}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                  Grid.Row="0" Grid.Column="0" Margin="20,104,0,0" RenderTransformOrigin="0.5,0.504" >
+        <Ellipse  Width="10" Height="10" Fill="{Binding VM_Color}" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                  Grid.Row="1" Margin="10">
         </Ellipse>
 
         <!--<Label x:Name="lon" Content="{Binding VM_Longitude}" FontSize="10" FontWeight="Bold" Foreground="SeaGreen" Margin="390,212,165,17" Grid.Row="1">
@@ -64,10 +66,7 @@
         </Label>
         <Label x:Name="lat"  Content="{Binding VM_Latitude}" FontSize="10" FontWeight="Normal" Foreground="Red" Margin="145,213,410,17" Grid.Row="1" Background= "LightGray"/>-->
         <Views:LonLat HorizontalAlignment="Center" Margin="55 0 80 0"  VerticalAlignment="Bottom" Grid.Row="1"></Views:LonLat>
-
-
-        <Button x:Name="Set" Content="Setting" HorizontalAlignment="Left" Height="35" VerticalAlignment="Bottom" Width="140" Click="Set_Click"
-                Background ="AliceBlue" BorderBrush="Black" BorderThickness="2" Cursor="Hand" Grid.Row="1" Margin="10,0,0,5"/>
+        
 
 
 

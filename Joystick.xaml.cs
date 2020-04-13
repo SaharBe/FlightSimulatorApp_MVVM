@@ -77,19 +77,6 @@ namespace FlightSimulatorApp.Views
         }
 
 
-
-    //    public static readonly DependencyProperty X_ValueProperty =
-    //DependencyProperty.Register(
-    //"X_Value", typeof(double),
-    //typeof(Joystick)
-    //);
-    //    public double X_Value
-    //    {
-    //        get { return (double)GetValue(X_ValueProperty); }
-    //        set { SetValue(X_ValueProperty, value); }
-    //    }
-
-
         private void Knob_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             mousePressed = false;
