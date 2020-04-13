@@ -56,8 +56,8 @@
             <TextBlock Visibility="{Binding VM_Err_Server_IO}"  Foreground="red" HorizontalAlignment="Center" Text="server timed out.disconnecting..." FontWeight="Bold"></TextBlock>
         </StackPanel>
 
-        <Ellipse  Width="10" Height="10" Fill="{Binding VM_Color}" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                  Grid.Row="1" Margin="10">
+                <Ellipse  Width="10" Height="10" Fill="{Binding VM_Color}" HorizontalAlignment="Left" VerticalAlignment="Top"
+                  Grid.Row="0" Grid.Column="0" Margin="20,104,0,0" RenderTransformOrigin="0.5,0.504" >
         </Ellipse>
 
         <!--<Label x:Name="lon" Content="{Binding VM_Longitude}" FontSize="10" FontWeight="Bold" Foreground="SeaGreen" Margin="390,212,165,17" Grid.Row="1">
